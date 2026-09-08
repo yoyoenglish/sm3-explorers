@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Explorers — новые слова | Super Minds 3</title>
+<meta name="description" content="Тренажёр новых слов к истории The Explorers, Super Minds 3.">
+<meta property="og:title" content="The Explorers — новые слова">
+<meta property="og:description" content="Тренажёр: карточки, пары, пропуски. Super Minds 3.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><text y='32' font-size='32'>%F0%9F%97%9D%EF%B8%8F</text></svg>">
+<style>
+  :root{
+    --night:#181F3A;
+    --parch:#F4E6C6;
+    --parch-2:#E5D2A8;
+    --ink:#2C2415;
+    --gold:#EBB13C;
+    --gold-2:#A87413;
+    --marker:#EE4BCB;
+    --moss:#4CB98B;
+    --brick:#E2593A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 12% -5%, #2E3A6B 0%, transparent 60%),
+      radial-gradient(700px 600px at 95% 110%, #2B2350 0%, transparent 65%),
+      var(--night);
+    color:var(--parch);
+    font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    font-size:17px;line-height:1.45;
+    -webkit-text-size-adjust:100%;
+  }
+  h1,.display{font-family:"Chalkboard SE","Marker Felt","Comic Sans MS","Avenir Next",system-ui,sans-serif;font-weight:700}
+
+  .topbar{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;padding:20px clamp(14px,4vw,44px) 0}
+  .brand{display:flex;gap:13px;align-items:center}
+  .crest{width:52px;height:52px;flex:none;display:grid;place-items:center;font-size:26px;
+    background:linear-gradient(160deg,var(--gold),var(--gold-2));color:#2A2008;
+    border-radius:14px 14px 20px 20px;box-shadow:0 6px 0 rgba(0,0,0,.28)}
+  .brand h1{margin:0;font-size:clamp(21px,5vw,32px);letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:14px;color:#BDC4E4}
+  .modes{display:flex;flex-wrap:wrap;gap:7px;padding-bottom:2px}
+  .mode{font:inherit;font-weight:600;cursor:pointer;background:transparent;color:#C6CDEC;
+    border:2px solid rgba(198,205,236,.28);border-radius:12px 12px 0 0;padding:10px 18px;border-bottom:none}
+  .mode:hover{background:rgba(198,205,236,.12);color:#fff}
+  .mode[aria-selected="true"]{background:var(--parch);color:var(--ink);border-color:var(--parch)}
+  .mode:focus-visible,button:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+
+  main{background:var(--parch);color:var(--ink);margin:0 clamp(6px,2vw,28px) clamp(6px,2vw,28px);
+    border-radius:0 18px 18px 18px;padding:clamp(16px,3vw,34px);box-shadow:0 18px 40px rgba(8,11,26,.45)}
+  .stage[hidden]{display:none}
+  .lead{margin:0 0 20px;max-width:60ch;font-size:15.5px;color:#6A5B3E}
+
+  /* карточки */
+  .deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:13px}
+  .card{position:relative;height:180px;background:none;border:none;padding:0;cursor:pointer;perspective:1000px;font:inherit;text-align:left}
+  .face{position:absolute;inset:0;border-radius:14px;padding:16px;display:flex;flex-direction:column;justify-content:center;
+    backface-visibility:hidden;transition:transform .5s cubic-bezier(.4,.2,.2,1);
+    box-shadow:0 4px 0 var(--parch-2),0 10px 18px rgba(60,45,15,.18)}
+  .front{background:#FFF8E7;border:2px solid var(--parch-2)}
+  .back{background:linear-gradient(170deg,#2C3560,#1E2545);color:var(--parch);transform:rotateY(180deg);border:2px solid #3C477A}
+  .card.flipped .front{transform:rotateY(-180deg)}
+  .card.flipped .back{transform:rotateY(0)}
+  .en{font-family:"Chalkboard SE","Comic Sans MS",sans-serif;font-size:25px;line-height:1.15;margin:0}
+  .en u{text-decoration:none;box-shadow:inset 0 -.42em 0 rgba(238,75,203,.35)}
+  .ipa{margin:6px 0 0;font-size:15px;color:#8A7550;letter-spacing:.3px}
+  .ru{font-size:20px;margin:0 0 8px;color:var(--gold)}
+  .def{font-size:14.5px;margin:0;color:#D6DBF2}
+  .say{position:absolute;top:9px;right:9px;width:40px;height:40px;border-radius:50%;
+    border:2px solid var(--parch-2);background:#fff;cursor:pointer;font-size:17px;line-height:1;display:grid;place-items:center}
+  .say:hover{background:var(--gold);border-color:var(--gold-2)}
+  .hint{position:absolute;bottom:11px;left:16px;font-size:12.5px;color:#A6926B}
+
+  /* пары */
+  .pairs{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:900px}
+  .col{display:flex;flex-direction:column;gap:9px}
+  .tile{font:inherit;text-align:left;cursor:pointer;padding:13px 15px;border-radius:11px;
+    background:#FFF8E7;border:2px solid var(--parch-2);color:var(--ink);font-size:16.5px;min-height:50px}
+  .tile:hover:not(.done){border-color:var(--marker)}
+  .tile.sel{border-color:var(--marker);background:#FFE9FA}
+  .tile.done{background:#E4F5EC;border-color:var(--moss);color:#3B6B55;cursor:default}
+  .tile.miss{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  /* пропуски */
+  .bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .chip{font:inherit;cursor:pointer;padding:10px 16px;border-radius:20px;font-size:16px;
+    background:#2C3560;color:var(--parch);border:2px solid #2C3560}
+  .chip:hover{background:var(--marker);border-color:var(--marker)}
+  .chip.used{opacity:.32;cursor:default;background:#8C8A9B;border-color:#8C8A9B}
+  .lines{display:flex;flex-direction:column;gap:10px;max-width:840px}
+  .line{font-size:18.5px;padding:9px 0;border-bottom:1px dashed var(--parch-2)}
+  .blank{font:inherit;font-size:18px;cursor:pointer;min-width:120px;padding:3px 10px;
+    background:#FFF8E7;border:none;border-bottom:3px solid var(--marker);color:var(--ink)}
+  .blank.sel{background:#FFE9FA}
+  .blank.ok{border-color:var(--moss);color:#2F6B4F}
+  .blank.no{border-color:var(--brick);color:var(--brick)}
+
+  .bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+  .btn{font:inherit;font-weight:600;cursor:pointer;padding:12px 22px;border-radius:11px;
+    background:var(--gold);border:2px solid var(--gold-2);color:#2A2008}
+  .btn.ghost{background:transparent;border-color:var(--parch-2);color:#7A6845}
+  .btn:hover{filter:brightness(1.05)}
+  .verdict{font-size:17px;font-weight:600;color:#6A5B3E}
+  .verdict.win{color:#2F6B4F}
+
+  footer{padding:0 clamp(14px,4vw,44px) 26px;font-size:13.5px;color:#8E97C4;max-width:70ch}
+
+  @media (max-width:620px){
+    body{font-size:16px}
+    .topbar{padding-top:14px}
+    .mode{padding:9px 14px;font-size:15px}
+    .deck{grid-template-columns:1fr 1fr;gap:10px}
+    .card{height:158px}
+    .en{font-size:19px}
+    .ipa{font-size:13px}
+    .ru{font-size:17px}
+    .def{font-size:13px}
+    .hint{display:none}
+    .tile{font-size:14.5px;padding:11px 11px}
+    .line{font-size:16.5px}
+    .blank{font-size:16px;min-width:96px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="crest" aria-hidden="true">&#128273;</div>
+    <div>
+      <h1>The Explorers — новые слова</h1>
+      <p>Super Minds 3 &middot; 9 слов &middot; тренируйся дома</p>
+    </div>
+  </div>
+  <nav class="modes" role="tablist" aria-label="Режимы">
+    <button class="mode" role="tab" aria-selected="true"  data-target="cards">1 &middot; Карточки</button>
+    <button class="mode" role="tab" aria-selected="false" data-target="pairs">2 &middot; Найди пару</button>
+    <button class="mode" role="tab" aria-selected="false" data-target="gaps">3 &middot; Пропуски</button>
+  </nav>
+</header>
+
+<main>
+  <section class="stage" id="cards">
+    <p class="lead">Прочитай слово вслух, нажми на кнопку со звуком и повтори за диктором. Потом нажми на карточку — увидишь перевод.</p>
+    <div class="deck" id="deck"></div>
+    <div class="bar">
+      <button class="btn" id="flipAll">Показать переводы</button>
+      <button class="btn ghost" id="resetCards">Закрыть все</button>
+    </div>
+  </section>
+
+  <section class="stage" id="pairs" hidden>
+    <p class="lead">Нажми английское слово слева, потом его перевод справа. Слова каждый раз перемешиваются.</p>
+    <div class="pairs">
+      <div class="col" id="colEn"></div>
+      <div class="col" id="colRu"></div>
+    </div>
+    <div class="bar">
+      <span class="verdict" id="pairScore">Найдено пар: 0 из 9</span>
+      <button class="btn ghost" id="resetPairs">Перемешать заново</button>
+    </div>
+  </section>
+
+  <section class="stage" id="gaps" hidden>
+    <p class="lead">Выбери слово внизу и нажми на пропуск в предложении. Когда заполнишь все девять — нажми «Проверить».</p>
+    <div class="bank" id="bank"></div>
+    <div class="lines" id="lines"></div>
+    <div class="bar">
+      <button class="btn" id="checkGaps">Проверить</button>
+      <button class="btn ghost" id="resetGaps">Начать заново</button>
+      <span class="verdict" id="gapScore"></span>
+    </div>
+  </section>
+</main>
+
+<footer>Yo Yo English &middot; тренажёр к истории The Explorers. Занимайся 5–10 минут в день — этого достаточно.</footer>
+
+<script>
+"use strict";
+
+const WORDS = [
+  {en:"explorer",  mark:"explorer",  ipa:"/ɪkˈsplɔː.rə/",   ru:"исследователь, первооткрыватель", def:"a person who travels to new places to find out about them"},
+  {en:"find",      mark:"find",      ipa:"/faɪnd/",         ru:"находить",                        def:"to get something after you look for it"},
+  {en:"lost treasure", mark:"treasure", ipa:"/ˌlɒst ˈtreʒ.ə/", ru:"потерянное сокровище",        def:"gold and other special old things that nobody can find"},
+  {en:"life — lives", mark:"lives",  ipa:"/laɪf/ — /laɪvz/", ru:"жизнь — жизни (мн. ч.)",         def:"one life, two lives: the f changes to v"},
+  {en:"exciting",  mark:"exciting",  ipa:"/ɪkˈsaɪ.tɪŋ/",    ru:"увлекательный, захватывающий",    def:"it makes you feel happy and interested; not boring"},
+  {en:"adventure", mark:"adventure", ipa:"/ədˈven.tʃə/",    ru:"приключение",                     def:"an exciting trip where new things happen"},
+  {en:"look for",  mark:"look for",  ipa:"/ˈlʊk fɔː/",      ru:"искать",                          def:"to try to find something or someone"},
+  {en:"secret",    mark:"secret",    ipa:"/ˈsiː.krət/",     ru:"секрет, тайна",                   def:"something that other people do not know"},
+  {en:"the only",  mark:"only",      ipa:"/ði ˈəʊn.li/",    ru:"единственный",                    def:"there are no other people or things like this"}
+];
+
+const SENTENCES = [
+  {text:"An ___ goes to new places and draws maps.",       key:"explorer"},
+  {text:"I can't ___ my pen. Is it under the desk?",        key:"find"},
+  {text:"Look! The old box is full of gold — real ___!",    key:"treasure"},
+  {text:"People say that cats have nine ___.",              key:"lives"},
+  {text:"This film is so ___! I want to watch it again.",   key:"exciting"},
+  {text:"Next week we start a new ___ in the mountains.",   key:"adventure"},
+  {text:"Every morning the birds ___ food in the garden.",  key:"look for"},
+  {text:"Don't tell anyone about the map — it's a ___!",     key:"secret"},
+  {text:"Tom is the ___ person with a key to the castle.",  key:"only"}
+];
+
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]);
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+$$(".mode").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    $$(".mode").forEach(b=>b.setAttribute("aria-selected", String(b===btn)));
+    $$(".stage").forEach(s=>{ s.hidden = (s.id !== btn.dataset.target); });
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+
+function say(text){
+  if(!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB"; u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+/* 1. карточки */
+const deck = $("#deck");
+WORDS.forEach(w=>{
+  const card = document.createElement("button");
+  card.className = "card"; card.type = "button";
+  card.innerHTML =
+    '<span class="face front">' +
+      '<span class="en">' + w.en.replace(w.mark, "<u>"+w.mark+"</u>") + '</span>' +
+      '<span class="ipa">' + w.ipa + '</span>' +
+      '<span class="hint">нажми, чтобы открыть</span>' +
+      '<span class="say" role="button" tabindex="0" aria-label="Произнести">&#128266;</span>' +
+    '</span>' +
+    '<span class="face back">' +
+      '<span class="ru">' + w.ru + '</span>' +
+      '<span class="def">' + w.def + '</span>' +
+    '</span>';
+  card.addEventListener("click", e=>{
+    if(e.target.classList.contains("say")){ e.stopPropagation(); say(w.mark); return; }
+    card.classList.toggle("flipped");
+  });
+  deck.appendChild(card);
+});
+$("#flipAll").addEventListener("click", ()=> $$(".card").forEach(c=>c.classList.add("flipped")));
+$("#resetCards").addEventListener("click", ()=> $$(".card").forEach(c=>c.classList.remove("flipped")));
+
+/* 2. пары */
+let selEn = null, found = 0;
+function buildPairs(){
+  selEn = null; found = 0;
+  const score = $("#pairScore");
+  score.textContent = "Найдено пар: 0 из " + WORDS.length;
+  score.classList.remove("win");
+  const colEn = $("#colEn"), colRu = $("#colRu");
+  colEn.innerHTML = ""; colRu.innerHTML = "";
+  shuffle(WORDS.slice()).forEach(w=>{
+    const b = document.createElement("button");
+    b.className = "tile"; b.type = "button"; b.textContent = w.en; b.dataset.key = w.mark;
+    b.addEventListener("click", ()=>{
+      if(b.classList.contains("done")) return;
+      $$("#colEn .tile").forEach(t=>t.classList.remove("sel"));
+      b.classList.add("sel"); selEn = b; say(w.mark);
+    });
+    colEn.appendChild(b);
+  });
+  shuffle(WORDS.slice()).forEach(w=>{
+    const b = document.createElement("button");
+    b.className = "tile"; b.type = "button"; b.textContent = w.ru; b.dataset.key = w.mark;
+    b.addEventListener("click", ()=>{
+      if(b.classList.contains("done") || !selEn) return;
+      if(selEn.dataset.key === b.dataset.key){
+        selEn.classList.remove("sel"); selEn.classList.add("done"); b.classList.add("done");
+        selEn = null; found++;
+        if(found === WORDS.length){
+          score.textContent = "Все " + WORDS.length + " пар найдены. Отлично!";
+          score.classList.add("win");
+        } else {
+          score.textContent = "Найдено пар: " + found + " из " + WORDS.length;
+        }
+      } else {
+        b.classList.add("miss");
+        setTimeout(()=>b.classList.remove("miss"), 360);
+      }
+    });
+    colRu.appendChild(b);
+  });
+}
+buildPairs();
+$("#resetPairs").addEventListener("click", buildPairs);
+
+/* 3. пропуски */
+let selBlank = null;
+function buildGaps(){
+  selBlank = null;
+  const score = $("#gapScore");
+  score.textContent = ""; score.classList.remove("win");
+  const bank = $("#bank"), lines = $("#lines");
+  bank.innerHTML = ""; lines.innerHTML = "";
+  shuffle(WORDS.map(w=>w.mark)).forEach(key=>{
+    const c = document.createElement("button");
+    c.className = "chip"; c.type = "button"; c.textContent = key; c.dataset.key = key;
+    c.addEventListener("click", ()=>{
+      if(c.classList.contains("used")) return;
+      const target = selBlank || $$(".blank").find(b=>!b.dataset.value);
+      if(!target) return;
+      if(target.dataset.value){
+        const old = $$(".chip").find(x=>x.dataset.key === target.dataset.value);
+        if(old) old.classList.remove("used");
+      }
+      target.dataset.value = key;
+      target.textContent = key;
+      target.classList.remove("sel","ok","no");
+      c.classList.add("used");
+      selBlank = null;
+    });
+    bank.appendChild(c);
+  });
+  SENTENCES.forEach(s=>{
+    const row = document.createElement("div");
+    row.className = "line";
+    const parts = s.text.split("___");
+    row.append(document.createTextNode(parts[0]));
+    const b = document.createElement("button");
+    b.className = "blank"; b.type = "button"; b.textContent = "＿＿＿"; b.dataset.key = s.key;
+    b.addEventListener("click", ()=>{
+      if(b.dataset.value){
+        const old = $$(".chip").find(x=>x.dataset.key === b.dataset.value);
+        if(old) old.classList.remove("used");
+        delete b.dataset.value;
+        b.textContent = "＿＿＿";
+        b.classList.remove("ok","no");
+      }
+      $$(".blank").forEach(x=>x.classList.remove("sel"));
+      b.classList.add("sel"); selBlank = b;
+    });
+    row.appendChild(b);
+    row.append(document.createTextNode(parts[1] || ""));
+    lines.appendChild(row);
+  });
+}
+buildGaps();
+$("#resetGaps").addEventListener("click", buildGaps);
+$("#checkGaps").addEventListener("click", ()=>{
+  let ok = 0;
+  $$(".blank").forEach(b=>{
+    b.classList.remove("ok","no","sel");
+    if(!b.dataset.value) return;
+    if(b.dataset.value === b.dataset.key){ b.classList.add("ok"); ok++; }
+    else b.classList.add("no");
+  });
+  const score = $("#gapScore");
+  score.classList.toggle("win", ok === SENTENCES.length);
+  score.textContent = ok === SENTENCES.length
+    ? "Все 9 верно. Молодец!"
+    : "Верно: " + ok + " из " + SENTENCES.length + ". Исправь красные и проверь ещё раз.";
+});
+</script>
+</body>
+</html>
